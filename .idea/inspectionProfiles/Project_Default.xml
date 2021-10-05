@@ -44,6 +44,7 @@
     <inspection_tool class="scwbasic-protection-set_XXEXMLInputFactorySetfeaturestofalse" enabled="true" level="SENSEI ERROR" enabled_by_default="true" />
     <inspection_tool class="scwjava_CollectionsDonotexposeinternalLists" enabled="true" level="SENSEI MARKED INFO" enabled_by_default="true" />
     <inspection_tool class="scwjava_CollectionsDonotexposeinternalSets" enabled="true" level="SENSEI MARKED INFO" enabled_by_default="true" />
+    <inspection_tool class="scwjava_Createprivateconstructorforutilityclassallfieldsmethodsarestatic" enabled="true" level="SENSEI INFO" enabled_by_default="true" />
     <inspection_tool class="scwjava_Donotcompareclassestypesbytheirname" enabled="true" level="SENSEI WARNING" enabled_by_default="true" />
     <inspection_tool class="scwjava_Donotcompareclassestypesbytheirnameliteral" enabled="true" level="SENSEI WARNING" enabled_by_default="true" />
     <inspection_tool class="scwjava_Donotcompareclassestypesbytheirnameliteralinverted" enabled="true" level="SENSEI WARNING" enabled_by_default="true" />
