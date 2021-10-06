@@ -28,17 +28,17 @@ internal fun TextView.setTextColorRes(@ColorRes color: Int) = setTextColor(conte
 fun getEvents():Map<String, List<DomainEvent>>{
     val hashMap = HashMap<String, List<DomainEvent>>()
     val firstList = listOf<DomainEvent>(
-        DomainEvent("Küünlapäev ehk pudrupäev", "folk", R.color.purple_200)
+        DomainEvent("Küünlapäev ehk pudrupäev", "folk")
     )
     val secondList = listOf<DomainEvent>(
-        DomainEvent("Luuvalupäev", "folk", R.color.purple_200)
+        DomainEvent("Luuvalupäev", "folk")
     )
     val thirdList = listOf<DomainEvent>(
-        DomainEvent( "Talvine peetripäev", "folk", R.color.purple_200)
+        DomainEvent( "Talvine peetripäev", "folk")
     )
     val fourthList = listOf<DomainEvent>(
-        DomainEvent("Iseseisvuspäev", "public", R.color.colorSecondary),
-        DomainEvent("Talvine madisepäev", "folk", R.color.purple_200)
+        DomainEvent("Iseseisvuspäev", "public"),
+        DomainEvent("Talvine madisepäev", "folk")
     )
     hashMap["2021-10-02"] = firstList
     hashMap["2021-10-12"] = secondList
