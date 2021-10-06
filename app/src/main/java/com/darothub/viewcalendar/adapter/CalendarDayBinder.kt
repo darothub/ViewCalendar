@@ -2,6 +2,8 @@ package com.darothub.viewcalendar.adapter
 
 import android.view.View
 import com.darothub.viewcalendar.R
+import com.darothub.viewcalendar.utils.getColorCompat
+import com.darothub.viewcalendar.utils.getEvents
 import com.darothub.viewcalendar.utils.setTextColorRes
 import com.kizitonwose.calendarview.CalendarView
 import com.kizitonwose.calendarview.model.CalendarDay
@@ -9,7 +11,7 @@ import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
 import java.time.LocalDate
 
-class CalendarDayBinder(private val calendarView: CalendarView) : DayBinder<DayViewContainer> {
+class CalendarDayBinder(private val calendarView: CalendarView, private val action:(String)->Unit) : DayBinder<DayViewContainer> {
     override fun bind(container: DayViewContainer, day: CalendarDay) {
         container.day = day
         val textView = container.binding.calendarDayText
@@ -23,22 +25,23 @@ class CalendarDayBinder(private val calendarView: CalendarView) : DayBinder<DayV
             textView.setTextColorRes(R.color.white)
             layout.setBackgroundResource(if (container.selectedDate == day.date) R.drawable.selected_bg else 0)
 
-//
-//            val flights = flights[day.date]
-//            if (flights != null) {
-//                if (flights.count() == 1) {
-//                    flightBottomView.setBackgroundColor(view.context.getColorCompat(flights[0].color))
-//                } else {
-//                    flightTopView.setBackgroundColor(view.context.getColorCompat(flights[0].color))
-//                    flightBottomView.setBackgroundColor(view.context.getColorCompat(flights[1].color))
-//                }
-//            }
+            val events = getEvents()[day.date.toString()]
+            if (events != null) {
+                if (events.count() == 1) {
+                    bottomView.setBackgroundColor(calendarView.context.getColorCompat(events[0].color))
+                } else {
+                    topView.setBackgroundColor(calendarView.context.getColorCompat(events[0].color))
+                    bottomView.setBackgroundColor(calendarView.context.getColorCompat(events[1].color))
+                }
+            }
         } else {
             textView.setTextColorRes(R.color.colorPrimary)
             layout.background = null
         }
     }
 
-    override fun create(view: View) = DayViewContainer(view, calendarView)
+    override fun create(view: View) = DayViewContainer(view, calendarView){
+        action.invoke(it)
+    }
 
 }

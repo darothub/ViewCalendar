@@ -1,5 +1,6 @@
 package com.darothub.viewcalendar.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -15,11 +16,12 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
     lateinit var date:String
     private lateinit var domainEvents:DomainEvents
     val dataList = mutableListOf<DomainEvent>()
-    private val formatter = DateTimeFormatter.ofPattern("EEEE'\n'dd MMM'\n HH:mm")
+    private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     inner class EventViewHolder(private val binding: EventItemViewBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(event:DomainEvent){
             binding.itemEventDateText.apply {
                 val local = LocalDate.parse(date)
+                Log.d("Adapter", local.toString())
                 text = formatter.format(local.atStartOfDay())
                 setBackgroundColor(itemView.context.getColorCompat(event.color))
             }
@@ -27,17 +29,17 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
             binding.itemEventName.text = event.name
         }
     }
-    @JvmName("setDomainEvents1")
-    fun setDomainEvents(domainEvents: DomainEvents){
-        this.domainEvents = domainEvents
-    }
-    fun setDomainEvent(){
-        val data = domainEvents.holidays[date]
-        if (data != null) {
-            dataList.addAll(data)
-            notifyDataSetChanged()
-        }
-    }
+//    @JvmName("setDomainEvents1")
+//    fun setDomainEvents(domainEvents: DomainEvents){
+//        this.domainEvents = domainEvents
+//    }
+//    fun setDomainEvent(){
+//        val data = domainEvents.holidays[date]
+//        if (data != null) {
+//            dataList.addAll(data)
+//            notifyDataSetChanged()
+//        }
+//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         return EventViewHolder(
