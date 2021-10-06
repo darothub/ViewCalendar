@@ -23,7 +23,7 @@ class CalendarDayBinder(private val calendarView: CalendarView, private val acti
         bottomView.background = null
         if (day.owner == DayOwner.THIS_MONTH) {
             textView.setTextColorRes(R.color.white)
-            layout.setBackgroundResource(if (container.selectedDate == day.date) R.drawable.selected_bg else 0)
+            layout.setBackgroundResource(if (DayViewContainer.selectedDate == day.date) R.drawable.selected_bg else 0)
 
             val events = getEvents()[day.date.toString()]
             if (events != null) {
