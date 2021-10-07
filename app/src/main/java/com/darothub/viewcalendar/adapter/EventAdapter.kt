@@ -1,23 +1,20 @@
 package com.darothub.viewcalendar.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.darothub.viewcalendar.databinding.EventItemViewBinding
-import com.darothub.viewcalendar.model.DomainEvent
-import com.darothub.viewcalendar.model.DomainEvents
+import com.darothub.viewcalendar.model.Holiday
 import com.darothub.viewcalendar.utils.getColorCompat
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class EventAdapter : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
     lateinit var date:String
-    val dataList = mutableListOf<DomainEvent>()
+    val dataList = mutableListOf<Holiday>()
     private val formatter = DateTimeFormatter.ofPattern("EEE'\n'dd MMM")
     inner class EventViewHolder(private val binding: EventItemViewBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(event:DomainEvent){
+        fun bind(event:Holiday){
             binding.itemEventDateText.apply {
                 val local = LocalDate.parse(date)
                 text = formatter.format(local.atStartOfDay())

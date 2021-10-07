@@ -1,11 +1,15 @@
 package com.darothub.viewcalendar.ioc.services.remote
-import com.darothub.viewcalendar.services.EventServices
+import com.darothub.viewcalendar.data.repository.local.EventLocalDataSource
+import com.darothub.viewcalendar.data.repository.remote.EventRemoteDataSource
+import com.darothub.viewcalendar.services.local.EventRealmDao
+import com.darothub.viewcalendar.services.remote.EventServices
 import com.darothub.viewcalendar.utils.Constant
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.realm.RealmConfiguration
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -66,4 +70,8 @@ object NetworkServiceModule {
     fun provideAuthServices(retrofit: Retrofit): EventServices {
         return retrofit.create(EventServices::class.java)
     }
+
+    @Singleton
+    @Provides
+    fun provideRemoteDataSource(eventServices: EventServices) = EventRemoteDataSource(eventServices)
 }

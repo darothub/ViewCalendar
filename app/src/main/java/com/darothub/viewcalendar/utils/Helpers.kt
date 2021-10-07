@@ -2,9 +2,7 @@ package com.darothub.viewcalendar.utils
 
 import android.widget.TextView
 import androidx.annotation.ColorRes
-import com.darothub.viewcalendar.R
-import com.darothub.viewcalendar.model.DomainEvent
-import com.darothub.viewcalendar.model.DomainEvents
+import com.darothub.viewcalendar.model.Holiday
 import java.time.DayOfWeek
 import java.time.temporal.WeekFields
 import java.util.*
@@ -25,20 +23,20 @@ fun daysOfWeekFromLocale(): Array<DayOfWeek> {
 
 internal fun TextView.setTextColorRes(@ColorRes color: Int) = setTextColor(context.getColorCompat(color))
 
-fun getEvents():Map<String, List<DomainEvent>>{
-    val hashMap = HashMap<String, List<DomainEvent>>()
-    val firstList = listOf<DomainEvent>(
-        DomainEvent("Küünlapäev ehk pudrupäev", "folk")
+fun getEvents():Map<String, List<Holiday>>{
+    val hashMap = HashMap<String, List<Holiday>>()
+    val firstList = listOf<Holiday>(
+        Holiday("Küünlapäev ehk pudrupäev", "folk")
     )
-    val secondList = listOf<DomainEvent>(
-        DomainEvent("Luuvalupäev", "folk")
+    val secondList = listOf<Holiday>(
+        Holiday("Luuvalupäev", "folk")
     )
-    val thirdList = listOf<DomainEvent>(
-        DomainEvent( "Talvine peetripäev", "folk")
+    val thirdList = listOf<Holiday>(
+        Holiday( "Talvine peetripäev", "folk")
     )
-    val fourthList = listOf<DomainEvent>(
-        DomainEvent("Iseseisvuspäev", "public"),
-        DomainEvent("Talvine madisepäev", "folk")
+    val fourthList = listOf<Holiday>(
+        Holiday("Iseseisvuspäev", "public"),
+        Holiday("Talvine madisepäev", "folk")
     )
     hashMap["2021-10-02"] = firstList
     hashMap["2021-10-12"] = secondList
