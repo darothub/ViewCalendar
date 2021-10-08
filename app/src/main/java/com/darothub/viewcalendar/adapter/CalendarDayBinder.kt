@@ -2,6 +2,7 @@ package com.darothub.viewcalendar.adapter
 
 import android.view.View
 import com.darothub.viewcalendar.R
+import com.darothub.viewcalendar.model.Holiday
 import com.darothub.viewcalendar.utils.getColorCompat
 import com.darothub.viewcalendar.utils.getEvents
 import com.darothub.viewcalendar.utils.setTextColorRes
@@ -11,7 +12,10 @@ import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
 import java.time.LocalDate
 
-class CalendarDayBinder(private val calendarView: CalendarView, private val action:(String)->Unit) : DayBinder<DayViewContainer> {
+class CalendarDayBinder(
+    private val calendarView: CalendarView,
+    private val duplicateEventMap :HashMap<String, List<Holiday>>,
+    private val action:(String)->Unit) : DayBinder<DayViewContainer> {
     override fun bind(container: DayViewContainer, day: CalendarDay) {
         container.day = day
         val textView = container.binding.calendarDayText
@@ -25,7 +29,7 @@ class CalendarDayBinder(private val calendarView: CalendarView, private val acti
             textView.setTextColorRes(R.color.white)
             layout.setBackgroundResource(if (DayViewContainer.selectedDate == day.date) R.drawable.selected_bg else 0)
 
-            val events = getEvents()[day.date.toString()]
+            val events = duplicateEventMap[day.date.toString()]
             if (events != null) {
                 if (events.count() == 1) {
                     bottomView.setBackgroundColor(calendarView.context.getColorCompat(events[0].color))

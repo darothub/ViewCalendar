@@ -1,5 +1,7 @@
 package com.darothub.viewcalendar.services.local
 import com.darothub.viewcalendar.model.HolidayDTO
+import io.realm.RealmList
+import io.realm.RealmResults
 import kotlinx.coroutines.flow.Flow
 import java.io.Closeable
 import java.util.*
@@ -13,5 +15,6 @@ import java.util.*
 interface EventRealmDao : Closeable {
     suspend fun insertEvents(events: HolidayDTO){}
     suspend fun getEvents(from: Int, to:Int): Flow<List<HolidayDTO>>
-    suspend fun getAllEvents(): Flow<List<HolidayDTO>>
+    fun getAllEvents(): Flow<List<HolidayDTO>>
+    fun getAllEventsTwo(): RealmResults<HolidayDTO>
 }

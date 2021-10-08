@@ -1,9 +1,13 @@
 package com.darothub.viewcalendar.data.repository.local
 
+import android.util.Log
+import com.darothub.viewcalendar.model.Holiday
 import com.darothub.viewcalendar.model.HolidayDTO
 import com.darothub.viewcalendar.services.local.EventRealmDao
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import io.realm.RealmList
+import io.realm.RealmResults
 import io.realm.kotlin.executeTransactionAwait
 import io.realm.kotlin.where
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -31,7 +35,7 @@ class EventLocalDataSource @Inject constructor(private val realmConfiguration: R
     override suspend fun insertEvents(events: HolidayDTO) {
         withContext(monoThreadDispatcher) {
             runCloseableTransaction(realmConfiguration) { transactionRealm ->
-                transactionRealm.insertOrUpdate(events)
+                transactionRealm.insert(events)
             }
         }
     }
@@ -40,8 +44,14 @@ class EventLocalDataSource @Inject constructor(private val realmConfiguration: R
         realm.where<HolidayDTO>().between("index", from, to).findAllAsync()
     }
 
-    override suspend fun getAllEvents(): Flow<List<HolidayDTO>> = flow {
-        realm.where<HolidayDTO>().findAllAsync()
+    override fun getAllEvents(): Flow<List<HolidayDTO>> = flow {
+        val r = realm.where<HolidayDTO>().findAllAsync()
+        r
+
+    }
+    override fun getAllEventsTwo(): RealmResults<HolidayDTO> {
+        val r = realm.where<HolidayDTO>().findAllAsync()
+        return r
     }
 
     override fun close() {

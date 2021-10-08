@@ -14,6 +14,7 @@ import io.realm.RealmList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import java.net.UnknownHostException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -22,7 +23,7 @@ import kotlin.collections.ArrayList
 
 @HiltViewModel
 class EventViewModel @Inject constructor(
-    val eventRepository: EventRepository
+    private val eventRepository: EventRepository
 ):ViewModel() {
     private val TAG by lazy { this::class.qualifiedName!! }
     private val _uiState = MutableStateFlow<UIState>(UIState.Nothing)
@@ -33,19 +34,19 @@ class EventViewModel @Inject constructor(
         _uiState.value = UIState.Loading
         try {
             if (eventRequest != null){
-                _uiState.value = UIState.Success(eventRepository.getCachedEvent(eventRequest))
+                val g = eventRepository.getCachedEvent(eventRequest)
+                _uiState.value = UIState.Success(g)
+                Log.i("Remote", g.toString())
             }
             else{
-                _uiState.value = UIState.Success(eventRepository.getCachedEvent())
+                val g = eventRepository.getCachedEvent()
+                if (g.isNotEmpty()) _uiState.value = UIState.Success(g)
+                else _uiState.value = UIState.Nothing
+                Log.i("LocalViewmodel", g.toString())
             }
         }
         catch (e:Throwable){
-            if (e is UnknownHostException){
-                _uiState.value = UIState.NetworkError
-            }
-            else{
-                _uiState.value = UIState.Error(e)
-            }
+            _uiState.value = UIState.Error(e)
 
         }
     }

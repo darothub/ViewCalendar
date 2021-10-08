@@ -3,6 +3,7 @@ package com.darothub.viewcalendar.data.repository
 import android.util.Log
 import com.darothub.viewcalendar.data.repository.remote.EventRemoteDataSource
 import com.darothub.viewcalendar.model.EventRequest
+import com.darothub.viewcalendar.model.Holiday
 import com.darothub.viewcalendar.model.HolidayDTO
 import com.darothub.viewcalendar.model.UIState
 import com.darothub.viewcalendar.services.local.EventRealmDao
@@ -28,18 +29,29 @@ class EventRepository @Inject constructor(
         holidays.forEach { (t, u) ->
             holidayDTO = HolidayDTO()
             holidayDTO.date = format.parse(t)?.time
-            holidayDTO.holidays.addAll(u)
+            for (i in u){
+                val hol = Holiday(i.name, i.type)
+                holidayDTO.holidays.add(hol)
+            }
             localDataSource.insertEvents(holidayDTO)
             listOfHolidayDTO.add(holidayDTO)
 
         }
+        localDataSource.close()
        return listOfHolidayDTO
     }
-    suspend fun getCachedEvent(eventRequest: EventRequest?=null): Flow<List<HolidayDTO>> {
+    suspend fun getCachedEvent(eventRequest: EventRequest?=null): List<HolidayDTO> {
         return if (eventRequest == null){
-            localDataSource.getAllEvents()
+            val h = localDataSource.getAllEventsTwo()
+            val b = ArrayList<HolidayDTO>()
+
+            for (i in h){
+                b.add(i)
+            }
+            Log.i(TAG, b.toString())
+            b
         } else{
-            flowOf(getRemoteEvent(eventRequest))
+            getRemoteEvent(eventRequest)
 
         }
 
