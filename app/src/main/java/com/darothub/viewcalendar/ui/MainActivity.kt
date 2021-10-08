@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.darothub.viewcalendar.Keys
+import com.darothub.viewcalendar.R
 import com.darothub.viewcalendar.adapter.CalendarDayBinder
 import com.darothub.viewcalendar.adapter.EventAdapter
 import com.darothub.viewcalendar.adapter.MonthHeaderBinder
@@ -104,7 +105,9 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
             }
         }
 
-
+        binding.back.setOnClickListener {
+            picker.show(supportFragmentManager, picker.toString())
+        }
 
         picker.addOnNegativeButtonClickListener {
             Log.i("Main", "Negative")
@@ -134,20 +137,20 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
     }
 
     override fun showErrorPage(error: String?) {
-        binding.vf.show()
         binding.errorText.text = error
         binding.errorText.show()
         binding.progressbar.hide()
+        binding.vf.displayedChild = 0
     }
 
     override fun loading() {
-        binding.vf.show()
+        binding.vf.displayedChild = 0
         binding.progressbar.show()
+
     }
 
     override fun displayData(data:List<HolidayDTO>) {
 
-        binding.vf.show()
         for (d in data){
             duplicateEventMap[dateFormat.format(d.date)] = d.holidays
             Log.i("Main", duplicateEventMap.toString())

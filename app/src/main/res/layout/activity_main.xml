@@ -6,12 +6,24 @@
     android:layout_height="match_parent"
     android:background="@color/colorBrown"
     tools:context=".ui.MainActivity">
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"
+        android:background="@color/colorPrimary"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_baseline_keyboard_backspace_24"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="10dp"
+        />
 
     <ViewFlipper
         android:id="@+id/vf"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         >
         <FrameLayout
             android:layout_width="match_parent"
@@ -109,6 +121,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/calendar"
                 android:nestedScrollingEnabled="false" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ViewFlipper>
 </androidx.constraintlayout.widget.ConstraintLayout>

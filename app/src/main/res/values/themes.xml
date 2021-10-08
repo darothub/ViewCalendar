@@ -19,5 +19,7 @@
     </style>
 
     <style name="Theme.ViewCalendar.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+    <style name="MaterialDatePickerStyle" parent="Widget.MaterialComponents.MaterialCalendar.Fullscreen"/>
+
 
 </resources>

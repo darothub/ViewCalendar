@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ViewCalendar</string>
+    <string description="Confirms the selection [CHAR_LIMIT=12]" name="mtrl_picker_save">Search</string>
 </resources>
