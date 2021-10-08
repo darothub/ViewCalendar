@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
         builder.setSelection(androidx.core.util.Pair(now.timeInMillis, now.timeInMillis))
         val picker = builder
             .setTitleText("Select dates")
+            .setTheme(R.style.MaterialDatePickerStyle)
             .setInputMode(MaterialDatePicker.INPUT_MODE_TEXT)
             .build()
         picker
@@ -118,6 +119,7 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
                 dateFormat.format(it.first), dateFormat.format(it.second)
             )
             lifecycleScope.launch {
+                duplicateEventMap.clear()
                 viewModel.getEvent(eventRequest)
             }
 

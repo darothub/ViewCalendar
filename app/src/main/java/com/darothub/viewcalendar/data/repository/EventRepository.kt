@@ -4,9 +4,8 @@ import android.util.Log
 import com.darothub.viewcalendar.data.repository.remote.EventRemoteDataSource
 import com.darothub.viewcalendar.model.*
 import com.darothub.viewcalendar.services.local.EventRealmDao
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOf
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -17,28 +16,44 @@ class EventRepository @Inject constructor(
     private val remoteDataSource: EventRemoteDataSource
 ) {
     private val TAG by lazy { this::class.qualifiedName!! }
-    lateinit var holidayDTO:HolidayDTO
+
     private var listOfHolidayDTO = ArrayList<HolidayDTO>()
     var format: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    private suspend fun getRemoteEvent(eventRequest: EventRequest): RemoteResponse{
-        val response = remoteDataSource.getEvents(eventRequest)
-        val holidays = response.holidays
-        if (!response.error){
-            holidays?.forEach { (t, u) ->
-                holidayDTO = HolidayDTO()
-                holidayDTO.date = format.parse(t)?.time
+    suspend fun getRemoteEvent(eventRequest: EventRequest): RemoteResponse {
+        var response: RemoteResponse?
+        val from = format.parse(eventRequest.startDate).time
+        val to = format.parse(eventRequest.endDate).time
+        val realmHoliday = getCachedEvent()
+        var last:HolidayDTO?=null
+        if (realmHoliday.holidayDTOs.isNotEmpty()){
+            last = realmHoliday.holidayDTOs.last()
+            Log.i("LAST", "${last}")
+        }
 
-                for (i in u){
+        response = if(last != null && last.date!! < to){
+            remoteDataSource.getEvents(eventRequest)
+        } else{
+            getCachedEvent(from, to) ?:  remoteDataSource.getEvents(eventRequest)
+        }
+
+        val holidays = response.holidays
+        if (response.local){
+            return response
+        }
+        if (!response.error && !response.local) {
+            holidays?.forEach { (t, u) ->
+                val holidayDTO = HolidayDTO()
+                holidayDTO.date = format.parse(t)?.time
+                for (i in u) {
                     holidayDTO.holidays.add(i.colorThis())
+                    localDataSource.insertEvents(holidayDTO)
                 }
 
-                localDataSource.insertEvents(holidayDTO)
                 listOfHolidayDTO.add(holidayDTO)
             }
             response.holidayDTOs = listOfHolidayDTO
             return response
         }
-        Log.i(TAG, response.toString())
         return response
 
     }
@@ -49,11 +64,27 @@ class EventRepository @Inject constructor(
             for (i in realmHoliday){
                 newHoliday.add(i)
             }
-            RemoteResponse().also {
+            RemoteResponse(error = false).also {
                 it.holidayDTOs = newHoliday
             }
         } else{
             getRemoteEvent(eventRequest)
+        }
+
+    }
+    private suspend fun getCachedEvent(from:Long, to:Long): RemoteResponse? {
+        val realmHoliday = localDataSource.getEvents(from, to)
+        Log.i(TAG, realmHoliday.asJSON())
+        if (realmHoliday.asJSON().length == 2){
+            return null
+        }
+        val newHoliday = ArrayList<HolidayDTO>()
+        for (i in realmHoliday){
+            newHoliday.add(i)
+        }
+        return RemoteResponse(error = false).apply {
+            holidayDTOs = newHoliday
+            local = true
         }
 
     }

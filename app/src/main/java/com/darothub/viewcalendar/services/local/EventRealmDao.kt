@@ -14,7 +14,7 @@ import java.util.*
  */
 interface EventRealmDao : Closeable {
     suspend fun insertEvents(events: HolidayDTO){}
-    suspend fun getEvents(from: Int, to:Int): Flow<List<HolidayDTO>>
+    suspend fun getEvents(from: Long, to:Long): RealmResults<HolidayDTO>
     fun getAllEvents(): Flow<List<HolidayDTO>>
     fun getAllEventsTwo(): RealmResults<HolidayDTO>
 }

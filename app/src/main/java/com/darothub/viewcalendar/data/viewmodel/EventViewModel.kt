@@ -35,7 +35,7 @@ class EventViewModel @Inject constructor(
         _uiState.value = UIState.Loading
         try {
             if (eventRequest != null){
-                val res = eventRepository.getCachedEvent(eventRequest)
+                val res = eventRepository.getRemoteEvent(eventRequest)
                 when {
                     res.error -> {
                         _uiState.value = UIState.Error(res.reason ?: "Error")

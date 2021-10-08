@@ -35,13 +35,14 @@ class EventLocalDataSource @Inject constructor(private val realmConfiguration: R
     override suspend fun insertEvents(events: HolidayDTO) {
         withContext(monoThreadDispatcher) {
             runCloseableTransaction(realmConfiguration) { transactionRealm ->
-                transactionRealm.insert(events)
+
+                transactionRealm.insertOrUpdate(events)
             }
         }
     }
 
-    override suspend fun getEvents(from: Int, to: Int): Flow<List<HolidayDTO>> = flow{
-        realm.where<HolidayDTO>().between("index", from, to).findAllAsync()
+    override suspend fun getEvents(from: Long, to: Long): RealmResults<HolidayDTO> {
+        return realm.where<HolidayDTO>().between("date", from, to).findAllAsync()
     }
 
     override fun getAllEvents(): Flow<List<HolidayDTO>> = flow {
