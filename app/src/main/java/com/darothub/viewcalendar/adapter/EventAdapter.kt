@@ -20,8 +20,14 @@ class EventAdapter : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
                 text = formatter.format(local.atStartOfDay())
                 setBackgroundColor(itemView.context.getColorCompat(event.color))
             }
-            binding.itemEventType.text = event.type
-            binding.itemEventName.text = event.name
+            binding.itemEventType.apply {
+                text = event.type
+                setTextColor(itemView.context.getColorCompat(event.color))
+            }
+            binding.itemEventName.apply {
+                text = event.name
+                setTextColor(itemView.context.getColorCompat(event.color))
+            }
         }
     }
 

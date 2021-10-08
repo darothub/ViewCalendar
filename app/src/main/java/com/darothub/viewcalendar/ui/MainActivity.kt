@@ -13,6 +13,7 @@ import com.darothub.viewcalendar.Keys
 import com.darothub.viewcalendar.adapter.CalendarDayBinder
 import com.darothub.viewcalendar.adapter.EventAdapter
 import com.darothub.viewcalendar.adapter.MonthHeaderBinder
+import com.darothub.viewcalendar.com.darothub.viewcalendar.utils.hide
 import com.darothub.viewcalendar.com.darothub.viewcalendar.utils.show
 import com.darothub.viewcalendar.data.viewmodel.EventViewModel
 import com.darothub.viewcalendar.databinding.ActivityMainBinding
@@ -24,6 +25,7 @@ import com.darothub.viewcalendar.utils.daysOfWeekFromLocale
 import com.darothub.viewcalendar.utils.getEvents
 import com.darothub.viewcalendar.utils.hideSystemUI
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.utils.next
 import com.kizitonwose.calendarview.utils.previous
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,8 +33,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.YearMonth
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
             .build()
         picker
     }
+    lateinit var ldt:LocalDateTime
     private val viewModel: EventViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +92,7 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
 
                     }
                     is UIState.Error -> {
-                        showErrorPage("error: String?")
+                        showErrorPage(state.exception)
                     }
                     is UIState.Loading -> {
                         loading()
@@ -131,10 +133,16 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
         eventAdapter.notifyDataSetChanged()
     }
 
-    override fun showErrorPage(error: String?) {}
+    override fun showErrorPage(error: String?) {
+        binding.vf.show()
+        binding.errorText.text = error
+        binding.errorText.show()
+        binding.progressbar.hide()
+    }
 
     override fun loading() {
         binding.vf.show()
+        binding.progressbar.show()
     }
 
     override fun displayData(data:List<HolidayDTO>) {
@@ -145,10 +153,18 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
             Log.i("Main", duplicateEventMap.toString())
         }
         val currentDate = data[0].date
-        Log.i("MainDate", currentDate.toString())
+
+        if (currentDate != null){
+            ldt = LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(currentDate),
+                ZoneId.systemDefault()
+            )
+
+        }
+
 
         val daysOfWeek = daysOfWeekFromLocale()
-        val currentMonth = YearMonth.of(2019, 2)
+        val currentMonth = YearMonth.of(ldt.year, ldt.monthValue)
         binding.calendar.setup(currentMonth.minusMonths(11), currentMonth.plusMonths(11), daysOfWeek.first())
         binding.calendar.scrollToMonth(currentMonth)
 
@@ -156,7 +172,7 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
             updateAdapterForDate(it)
         }
         binding.calendar.monthHeaderBinder = MonthHeaderBinder()
-
+        binding.calendarMonthYearText.text = currentMonth.month.name
         binding.calendar.monthScrollListener = { month ->
             val title = "${monthTitleFormatter.format(month.yearMonth)} ${month.yearMonth.year}"
             binding.calendarMonthYearText.text = title
