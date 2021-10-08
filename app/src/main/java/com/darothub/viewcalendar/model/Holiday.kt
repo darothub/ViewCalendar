@@ -13,7 +13,7 @@ open class Holiday(
     @ColorRes var color: Int = 0
 
     fun colorThis(): Holiday{
-        color = if (type == "folk") R.color.purple_700 else R.color.purple_200
+        color = if (type == "folk") R.color.myLightMintGreen else R.color.myMintGreen
         return this
     }
 

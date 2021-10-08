@@ -35,7 +35,6 @@ class EventLocalDataSource @Inject constructor(private val realmConfiguration: R
     override suspend fun insertEvents(events: HolidayDTO) {
         withContext(monoThreadDispatcher) {
             runCloseableTransaction(realmConfiguration) { transactionRealm ->
-
                 transactionRealm.insertOrUpdate(events)
             }
         }

@@ -110,16 +110,16 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
             picker.show(supportFragmentManager, picker.toString())
         }
 
-        picker.addOnNegativeButtonClickListener {
-            Log.i("Main", "Negative")
-        }
+
         picker.addOnPositiveButtonClickListener {
+            Log.i("MAIN", "OK")
+            duplicateEventMap.clear()
             val eventRequest = EventRequest(
                 Keys.apiKey(),
                 dateFormat.format(it.first), dateFormat.format(it.second)
             )
             lifecycleScope.launch {
-                duplicateEventMap.clear()
+
                 viewModel.getEvent(eventRequest)
             }
 

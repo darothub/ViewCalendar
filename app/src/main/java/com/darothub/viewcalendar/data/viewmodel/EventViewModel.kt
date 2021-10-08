@@ -1,6 +1,7 @@
 package com.darothub.viewcalendar.data.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.darothub.viewcalendar.data.repository.EventRepository
 import com.darothub.viewcalendar.data.repository.remote.EventRemoteDataSource
@@ -25,7 +26,8 @@ import kotlin.properties.Delegates
 
 @HiltViewModel
 class EventViewModel @Inject constructor(
-    private val eventRepository: EventRepository
+    private val eventRepository: EventRepository,
+    val state: SavedStateHandle
 ):ViewModel() {
     private val TAG by lazy { this::class.qualifiedName!! }
     private val _uiState = MutableStateFlow<UIState>(UIState.Nothing)

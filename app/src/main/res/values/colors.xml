@@ -7,8 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="colorPrimary">#90AFC5</color>
-    <color name="colorSecondary">#336B87</color>
-    <color name="colorSecondaryDark">#2A3132</color>
-    <color name="colorBrown">#763626</color>
+    <color name="colorPrimary">#03418E</color>
+    <color name="colorSecondary">#4A525A</color>
+    <color name="colorSecondaryDark">#24272B</color>
+    <color name="colorBrown">#3E78B2</color>
+    <color name="myMintGreen">#415D43</color>
+    <color name="myLightMintGreen">#709775</color>
 </resources>

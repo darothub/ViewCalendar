@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBrown"
+    android:background="@color/colorSecondaryDark"
     tools:context=".ui.MainActivity">
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/back"
@@ -13,7 +13,7 @@
         android:layout_gravity="end|center_vertical"
         android:background="@color/colorPrimary"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_baseline_keyboard_backspace_24"
+        android:src="@drawable/ic_baseline_search_24"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,6 +55,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
                 android:background="@color/colorSecondaryDark"
+                android:layout_marginTop="20dp"
                 android:theme="@style/Theme.ViewCalendar.AppBarOverlay">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
