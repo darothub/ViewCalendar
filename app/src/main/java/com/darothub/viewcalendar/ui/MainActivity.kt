@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     private val duplicateEventMap = HashMap<String, List<Holiday>>()
     lateinit var activityUiStateListener: ActivityUiStateListener
-    val picker by lazy {
+    private val picker by lazy {
         val builder = MaterialDatePicker.Builder.dateRangePicker()
         val now = Calendar.getInstance()
         builder.build()
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
         hideSystemUI(binding.root)
         activityUiStateListener = this
 
-        binding.rv.apply {
+        binding.calendarLayout.rv.apply {
             layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
             adapter = eventAdapter
             addItemDecoration(DividerItemDecoration(this@MainActivity, RecyclerView.VERTICAL))
@@ -81,28 +81,7 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
         lifecycleScope.launchWhenCreated {
             viewModel.getEvent()
             viewModel.uiState.collect { state ->
-                when (state) {
-                    is UIState.Success<*> -> {
-                        state.data as List<HolidayDTO>
-                        Log.i("Main Act", state.data[0].toString())
-                        if (state.data.isNotEmpty()){
-                            displayData(state.data)
-                        }
-                        else{
-                            picker.show(supportFragmentManager, picker.toString())
-                        }
-
-                    }
-                    is UIState.Error -> {
-                        showErrorPage(state.exception)
-                    }
-                    is UIState.Loading -> {
-                        loading()
-                    }
-                    is UIState.Nothing -> {
-                        picker.show(supportFragmentManager, picker.toString())
-                    }
-                }
+                uiStateWatch(state)
             }
         }
 
@@ -129,6 +108,31 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
 
 
     }
+
+    private fun uiStateWatch(
+        state: UIState,
+    ) {
+        when (state) {
+            is UIState.Success<*> -> {
+                state.data as List<HolidayDTO>
+                if (state.data.isNotEmpty()) {
+                    displayData(state.data)
+                } else {
+                    picker.show(supportFragmentManager, picker.toString())
+                }
+            }
+            is UIState.Error -> {
+                showErrorPage(state.exception)
+            }
+            is UIState.Loading -> {
+                loading()
+            }
+            is UIState.Nothing -> {
+                picker.show(supportFragmentManager, picker.toString())
+            }
+        }
+    }
+
     private fun updateAdapterForDate(date: String?) {
         if (date != null) {
             eventAdapter.date = date
@@ -139,15 +143,15 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
     }
 
     override fun showErrorPage(error: String?) {
-        binding.errorText.text = error
-        binding.errorText.show()
-        binding.progressbar.hide()
+        binding.loader.errorText.text = error
+        binding.loader.errorText.show()
+        binding.loader.progressbar.hide()
         binding.vf.displayedChild = 0
     }
 
     override fun loading() {
         binding.vf.displayedChild = 0
-        binding.progressbar.show()
+        binding.loader.progressbar.show()
 
     }
 
@@ -170,35 +174,35 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
 
         val daysOfWeek = daysOfWeekFromLocale()
         val currentMonth = YearMonth.of(ldt.year, ldt.monthValue)
-        binding.calendar.setup(currentMonth.minusMonths(11), currentMonth.plusMonths(11), daysOfWeek.first())
-        binding.calendar.scrollToMonth(currentMonth)
+        binding.calendarLayout.calendar.setup(currentMonth.minusMonths(11), currentMonth.plusMonths(11), daysOfWeek.first())
+        binding.calendarLayout.calendar.scrollToMonth(currentMonth)
 
-        binding.calendar.dayBinder = CalendarDayBinder(binding.calendar, duplicateEventMap){
+        binding.calendarLayout.calendar.dayBinder = CalendarDayBinder(binding.calendarLayout.calendar, duplicateEventMap){
             updateAdapterForDate(it)
         }
-        binding.calendar.monthHeaderBinder = MonthHeaderBinder()
-        binding.calendarMonthYearText.text = currentMonth.month.name
-        binding.calendar.monthScrollListener = { month ->
+        binding.calendarLayout.calendar.monthHeaderBinder = MonthHeaderBinder()
+        binding.calendarLayout.calendarMonthYearText.text = currentMonth.month.name
+        binding.calendarLayout.calendar.monthScrollListener = { month ->
             val title = "${monthTitleFormatter.format(month.yearMonth)} ${month.yearMonth.year}"
-            binding.calendarMonthYearText.text = title
+            binding.calendarLayout.calendarMonthYearText.text = title
 
             selectedDate?.let {
                 // Clear selection if we scroll to a new month.
                 selectedDate = null
-                binding.calendar.notifyDateChanged(it)
+                binding.calendarLayout.calendar.notifyDateChanged(it)
                 updateAdapterForDate(null)
             }
         }
 
-        binding.calendarNextMonthImage.setOnClickListener {
-            binding.calendar.findFirstVisibleMonth()?.let {
-                binding.calendar.smoothScrollToMonth(it.yearMonth.next)
+        binding.calendarLayout.calendarNextMonthImage.setOnClickListener {
+            binding.calendarLayout.calendar.findFirstVisibleMonth()?.let {
+                binding.calendarLayout.calendar.smoothScrollToMonth(it.yearMonth.next)
             }
         }
 
-        binding.calendarPreviousMonthImage.setOnClickListener {
-            binding.calendar.findFirstVisibleMonth()?.let {
-                binding.calendar.smoothScrollToMonth(it.yearMonth.previous)
+        binding.calendarLayout.calendarPreviousMonthImage.setOnClickListener {
+            binding.calendarLayout.calendar.findFirstVisibleMonth()?.let {
+                binding.calendarLayout.calendar.smoothScrollToMonth(it.yearMonth.previous)
             }
         }
         binding.vf.displayedChild = 1
