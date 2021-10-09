@@ -141,6 +141,7 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
 
     override fun loading() {
         binding.vf.displayedChild = 0
+        binding.loader.errorText.hide()
         binding.loader.progressbar.show()
 
     }
