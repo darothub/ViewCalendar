@@ -1,20 +1,14 @@
 package com.darothub.viewcalendar.data.repository.local
 
-import android.util.Log
-import com.darothub.viewcalendar.model.Holiday
-import com.darothub.viewcalendar.model.HolidayDTO
+import com.darothub.viewcalendar.com.darothub.viewcalendar.model.HolidayDTO
 import com.darothub.viewcalendar.services.local.EventRealmDao
 import io.realm.Realm
 import io.realm.RealmConfiguration
-import io.realm.RealmList
 import io.realm.RealmResults
 import io.realm.kotlin.executeTransactionAwait
 import io.realm.kotlin.where
 import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import java.util.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
@@ -40,18 +34,12 @@ class EventLocalDataSource @Inject constructor(private val realmConfiguration: R
         }
     }
 
-    override suspend fun getEvents(from: Long, to: Long): RealmResults<HolidayDTO> {
-        return realm.where<HolidayDTO>().between("date", from, to).findAllAsync()
+    override suspend fun getEvents(from: Long?, to: Long?): RealmResults<HolidayDTO> {
+        return realm.where<HolidayDTO>().between("date", from!!, to!!).findAllAsync()
     }
 
-    override fun getAllEvents(): Flow<List<HolidayDTO>> = flow {
-        val r = realm.where<HolidayDTO>().findAllAsync()
-        r
-
-    }
-    override fun getAllEventsTwo(): RealmResults<HolidayDTO> {
-        val r = realm.where<HolidayDTO>().findAllAsync()
-        return r
+    override fun fetchAllLocalData(): RealmResults<HolidayDTO> {
+        return realm.where<HolidayDTO>().findAllAsync()
     }
 
     override fun close() {

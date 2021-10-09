@@ -1,4 +1,4 @@
-package com.darothub.viewcalendar.adapter
+package com.darothub.viewcalendar.ui.adapter
 
 import android.util.TypedValue
 import android.view.View

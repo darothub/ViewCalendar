@@ -3,7 +3,6 @@ package com.darothub.viewcalendar.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -11,33 +10,29 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.darothub.viewcalendar.Keys
 import com.darothub.viewcalendar.R
-import com.darothub.viewcalendar.adapter.CalendarDayBinder
-import com.darothub.viewcalendar.adapter.EventAdapter
-import com.darothub.viewcalendar.adapter.MonthHeaderBinder
+import com.darothub.viewcalendar.ui.adapter.CalendarDayBinder
+import com.darothub.viewcalendar.ui.adapter.EventAdapter
+import com.darothub.viewcalendar.ui.adapter.MonthHeaderBinder
+import com.darothub.viewcalendar.com.darothub.viewcalendar.model.HolidayDTO
 import com.darothub.viewcalendar.com.darothub.viewcalendar.utils.hide
 import com.darothub.viewcalendar.com.darothub.viewcalendar.utils.show
 import com.darothub.viewcalendar.data.viewmodel.EventViewModel
 import com.darothub.viewcalendar.databinding.ActivityMainBinding
 import com.darothub.viewcalendar.model.EventRequest
 import com.darothub.viewcalendar.model.Holiday
-import com.darothub.viewcalendar.model.HolidayDTO
 import com.darothub.viewcalendar.model.UIState
 import com.darothub.viewcalendar.utils.daysOfWeekFromLocale
-import com.darothub.viewcalendar.utils.getEvents
-import com.darothub.viewcalendar.utils.hideSystemUI
+import com.darothub.viewcalendar.utils.makeFullScreen
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.utils.next
 import com.kizitonwose.calendarview.utils.previous
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -68,7 +63,7 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        hideSystemUI(binding.root)
+        makeFullScreen(binding.root)
         activityUiStateListener = this
 
         binding.calendarLayout.rv.apply {
@@ -79,7 +74,7 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
         eventAdapter.notifyDataSetChanged()
 
         lifecycleScope.launchWhenCreated {
-            viewModel.getEvent()
+            viewModel.getEvents()
             viewModel.uiState.collect { state ->
                 uiStateWatch(state)
             }
@@ -91,21 +86,16 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
 
 
         picker.addOnPositiveButtonClickListener {
-            Log.i("MAIN", "OK")
             duplicateEventMap.clear()
             val eventRequest = EventRequest(
                 Keys.apiKey(),
                 dateFormat.format(it.first), dateFormat.format(it.second)
             )
             lifecycleScope.launch {
-
-                viewModel.getEvent(eventRequest)
+                viewModel.getEvents(eventRequest)
             }
 
         }
-
-
-
 
     }
 
@@ -159,7 +149,6 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
 
         for (d in data){
             duplicateEventMap[dateFormat.format(d.date)] = d.holidays
-            Log.i("Main", duplicateEventMap.toString())
         }
         val currentDate = data[0].date
 

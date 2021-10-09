@@ -1,39 +1,26 @@
 package com.darothub.viewcalendar.data.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.darothub.viewcalendar.data.repository.EventRepository
-import com.darothub.viewcalendar.data.repository.remote.EventRemoteDataSource
 import com.darothub.viewcalendar.model.*
-import com.darothub.viewcalendar.services.local.EventRealmDao
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.realm.RealmList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import retrofit2.HttpException
 import java.io.Reader
-import java.net.UnknownHostException
-import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.properties.Delegates
 
 @HiltViewModel
 class EventViewModel @Inject constructor(
-    private val eventRepository: EventRepository,
-    val state: SavedStateHandle
+    private val eventRepository: EventRepository
 ):ViewModel() {
     private val TAG by lazy { this::class.qualifiedName!! }
     private val _uiState = MutableStateFlow<UIState>(UIState.Nothing)
     val uiState: StateFlow<UIState> get() = _uiState
 
-    suspend fun getEvent(eventRequest: EventRequest?=null) {
+    suspend fun getEvents(eventRequest: EventRequest?=null) {
         _uiState.value = UIState.Loading
         try {
             if (eventRequest != null){
@@ -70,8 +57,8 @@ class EventViewModel @Inject constructor(
         errorBody: Reader?
     ): String {
         val gson = Gson()
-        val type = object : TypeToken<RemoteResponse>() {}.type
-        val errorResponse: RemoteResponse? = gson.fromJson(errorBody, type)
+        val type = object : TypeToken<DomainEvent>() {}.type
+        val errorResponse: DomainEvent? = gson.fromJson(errorBody, type)
 
         return errorResponse?.reason.toString()
     }

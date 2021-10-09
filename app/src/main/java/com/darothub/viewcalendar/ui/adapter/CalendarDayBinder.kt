@@ -1,16 +1,14 @@
-package com.darothub.viewcalendar.adapter
+package com.darothub.viewcalendar.ui.adapter
 
 import android.view.View
 import com.darothub.viewcalendar.R
 import com.darothub.viewcalendar.model.Holiday
 import com.darothub.viewcalendar.utils.getColorCompat
-import com.darothub.viewcalendar.utils.getEvents
 import com.darothub.viewcalendar.utils.setTextColorRes
 import com.kizitonwose.calendarview.CalendarView
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
-import java.time.LocalDate
 
 class CalendarDayBinder(
     private val calendarView: CalendarView,

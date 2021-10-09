@@ -1,4 +1,4 @@
-package com.darothub.viewcalendar.adapter
+package com.darothub.viewcalendar.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

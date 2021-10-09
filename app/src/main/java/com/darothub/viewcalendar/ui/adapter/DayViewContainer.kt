@@ -1,4 +1,4 @@
-package com.darothub.viewcalendar.adapter
+package com.darothub.viewcalendar.ui.adapter
 
 import android.view.View
 import com.darothub.viewcalendar.databinding.CalendarDayViewLayoutBinding
