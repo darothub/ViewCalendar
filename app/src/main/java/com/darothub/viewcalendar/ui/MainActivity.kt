@@ -1,6 +1,7 @@
 package com.darothub.viewcalendar.ui
 
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
     }
     lateinit var ldt:LocalDateTime
     private val viewModel: EventViewModel by viewModels()
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -123,6 +125,7 @@ class MainActivity : AppCompatActivity(), ActivityUiStateListener {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun updateAdapterForDate(date: String?) {
         if (date != null) {
             eventAdapter.date = date
